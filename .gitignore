@@ -1,3 +1,5 @@
-2DMOT2015/
 .vscode/
-mot_benchmark/
+yolo_v3/mot_benchmark/
+sort/output/
+
+*.weights
