@@ -14,6 +14,10 @@ import pickle as pkl
 import pandas as pd
 import random
 
+import sys
+sys.path.append(os.getcwd())
+from sort.sort import *
+
 
 def arg_parse():
     """
@@ -203,20 +207,37 @@ for i in range(output.shape[0]):
     output[i, [1, 3]] = torch.clamp(output[i, [1, 3]], 0.0, im_dim_list[i, 0])
     output[i, [2, 4]] = torch.clamp(output[i, [2, 4]], 0.0, im_dim_list[i, 1])
 
+
+def track(x, results=None):
+    if results is None:
+        return np.empty((0, 8))
+    tracker = Sort(max_age=3)
+    all_tracks = []
+    for ind, im in enumerate(results):
+        detections = x[x[:, 0].cpu() == ind]
+        if len(detections) == 0:
+            tracker.update(np.empty((0, 8)))
+            continue
+        dets = detections.cpu().numpy()
+        tracks = tracker.update(dets)
+        all_tracks.append(tracks)
+    return np.concatenate(all_tracks)
+
+output = track(output, loaded_ims)
+
 output_recast = time.time()
 class_load = time.time()
 colors = pkl.load(open(cwd + "pallete", "rb"))
-
 draw = time.time()
 
 
 def write(x, results):
-    c1 = tuple(x[1:3].int())
-    c2 = tuple(x[3:5].int())
-    img = results[int(x[0])]
-    cls = int(x[-1])
-    color = random.choice(colors)
-    label = "{0}".format(classes[cls])
+    x = x.astype(np.int16)
+    c1 = tuple(x[1:3])
+    c2 = tuple(x[3:5])
+    img = results[x[0]]
+    label = "{}{:03d}".format(classes[x[-2]], x[-1])
+    color = colors[x[-1] % 100]
     cv2.rectangle(img, c1, c2, color, 1)
     t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
     c2 = c1[0] + t_size[0] + 3, c1[1] + t_size[1] + 4
@@ -227,13 +248,40 @@ def write(x, results):
 
 
 list(map(lambda x: write(x, loaded_ims), output))
-
 det_names = pd.Series(imlist).apply(
-    lambda x: "{}/det_{}".format(args.det, x.split("/")[-1])
+    lambda x: "{}/det_{}".format(
+        cwd + args.det, x.replace('\\', ' / ').split("/")[-1]
+    )
 )
-
 list(map(cv2.imwrite, det_names, loaded_ims))
 
+# def write(x, results):
+#     c1 = tuple(x[1:3].int())
+#     c2 = tuple(x[3:5].int())
+#     img = results[int(x[0])]
+#     cls = int(x[-1])
+#     color = random.choice(colors)
+#     label = "{0}".format(classes[cls])
+#     cv2.rectangle(img, c1, c2, color, 1)
+#     t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1, 1)[0]
+#     c2 = c1[0] + t_size[0] + 3, c1[1] + t_size[1] + 4
+#     cv2.rectangle(img, c1, c2, color, -1)
+#     cv2.putText(img, label, (c1[0], c1[1] + t_size[1] + 4),
+#                 cv2.FONT_HERSHEY_PLAIN, 1, [225, 255, 255], 1)
+#     return img
+
+# list(map(lambda x: write(x, loaded_ims), output))
+# det_names = pd.Series(imlist).apply(
+#     lambda x: "{}/det_{}.jpg".format(cwd + args.det, x.split("/")[-1])
+# )
+
+# list(map(cv2.imwrite, det_names, loaded_ims))
+fps = 25
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
+videoWriter = cv2.VideoWriter('yolo_v3/saveVideo.avi', fourcc, fps, (1224, 370))
+for i, im in enumerate(loaded_ims):
+    videoWriter.write(im)
+videoWriter.release()
 end = time.time()
 
 print("SUMMARY")
