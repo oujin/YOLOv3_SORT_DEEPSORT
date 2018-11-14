@@ -50,7 +50,7 @@ def create_unique_color_uchar(tag, hue_step=0.41):
 
     """
     r, g, b = create_unique_color_float(tag, hue_step)
-    return int(255*r), int(255*g), int(255*b)
+    return int(255 * r), int(255 * g), int(255 * b)
 
 
 class NoVisualization(object):
@@ -90,8 +90,8 @@ class Visualization(object):
         image_shape = seq_info["image_size"][::-1]
         aspect_ratio = float(image_shape[1]) / image_shape[0]
         image_shape = 1024, int(aspect_ratio * 1024)
-        self.viewer = ImageViewer(
-            update_ms, image_shape, "Figure %s" % seq_info["sequence_name"])
+        self.viewer = ImageViewer(update_ms, image_shape,
+                                  "Figure %s" % seq_info["sequence_name"])
         self.viewer.thickness = 2
         self.frame_idx = seq_info["min_frame_idx"]
         self.last_idx = seq_info["max_frame_idx"]
@@ -131,4 +131,6 @@ class Visualization(object):
                 *track.to_tlwh().astype(np.int), label=str(track.track_id))
             # self.viewer.gaussian(track.mean[:2], track.covariance[:2, :2],
             #                      label="%d" % track.track_id)
+
+
 #

@@ -1,6 +1,6 @@
 .vscode/
-yolo_v3/mot_benchmark/
+mot_benchmark/
 sort/results/
-yolo_v3/det/
+det/
 *.weights
 *.avi

@@ -278,7 +278,7 @@ list(map(cv2.imwrite, det_names, loaded_ims))
 # list(map(cv2.imwrite, det_names, loaded_ims))
 fps = 25
 fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-videoWriter = cv2.VideoWriter('yolo_v3/saveVideo.avi', fourcc, fps, (1224, 370))
+videoWriter = cv2.VideoWriter('yolo_v3/saveVideo.mp4', fourcc, fps, (1224, 370))
 for i, im in enumerate(loaded_ims):
     videoWriter.write(im)
 videoWriter.release()
