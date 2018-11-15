@@ -4,3 +4,6 @@ sort/results/
 det/
 *.weights
 *.avi
+resources/
+tmp/
+

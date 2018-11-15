@@ -31,7 +31,8 @@ def non_max_suppression(boxes, max_bbox_overlap, scores=None):
     Returns
     -------
     List[int]
-        Returns indices of detections that have survived non-maxima suppression.
+        Returns indices of detections that have survived non-maxima
+        suppression.
 
     """
     if len(boxes) == 0:

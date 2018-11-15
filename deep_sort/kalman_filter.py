@@ -64,8 +64,8 @@ class KalmanFilter(object):
         -------
         (ndarray, ndarray)
             Returns the mean vector (8 dimensional) and covariance matrix (8x8
-            dimensional) of the new track. Unobserved velocities are initialized
-            to 0 mean.
+            dimensional) of the new track. Unobserved velocities are
+            initialized to 0 mean.
 
         """
         mean_pos = measurement

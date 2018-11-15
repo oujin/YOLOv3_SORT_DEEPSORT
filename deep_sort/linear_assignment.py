@@ -17,7 +17,9 @@ def min_cost_matching(distance_metric,
 
     Parameters
     ----------
-    distance_metric : Callable[List[Track], List[Detection], List[int], List[int]) -> ndarray
+    distance_metric : Callable(
+        List[Track], List[Detection], List[int], List[int]
+         ) -> ndarray
         The distance metric is given a list of tracks and detections as well as
         a list of N track indices and M detection indices. The metric should
         return the NxM dimensional cost matrix, where element (i, j) is the
@@ -88,7 +90,9 @@ def matching_cascade(distance_metric,
 
     Parameters
     ----------
-    distance_metric : Callable[List[Track], List[Detection], List[int], List[int]) -> ndarray
+    distance_metric : Callable(
+            List[Track], List[Detection], List[int], List[int]
+        ) -> ndarray
         The distance metric is given a list of tracks and detections as well as
         a list of N track indices and M detection indices. The metric should
         return the NxM dimensional cost matrix, where element (i, j) is the

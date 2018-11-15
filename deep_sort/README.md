@@ -21,19 +21,23 @@ Additionally, feature generation requires TensorFlow (>= 1.0).
 ## Installation
 
 First, clone the repository:
-```
+
+``` git
 git clone https://github.com/nwojke/deep_sort.git
 ```
+
 Then, download pre-generated detections and the CNN checkpoint file from
 [here](https://drive.google.com/open?id=1m2ebLHB2JThZC8vWGDYEKGsevLssSkjo).
 
 *NOTE:* The candidate object locations of our pre-generated detections are
 taken from the following paper:
-```
+
+``` txt
 F. Yu, W. Li, Q. Li, Y. Liu, X. Shi, J. Yan. POI: Multiple Object Tracking with
 High Performance Detection and Appearance Feature. In BMTT, SenseTime Group
 Limited, 2016.
 ```
+
 We have replaced the appearance descriptor with a custom deep convolutional
 neural network (see below).
 
@@ -44,7 +48,8 @@ The following example starts the tracker on one of the
 sequences.
 We assume resources have been extracted to the repository root directory and
 the MOT16 benchmark data is in `./MOT16`:
-```
+
+``` cmd
 python deep_sort_app.py \
     --sequence_dir=./MOT16/test/MOT16-06
     --detection_file=./resources/detections/MOT16_POI_test/MOT16-06.npy \
@@ -52,6 +57,7 @@ python deep_sort_app.py \
     --nn_budget=100 \
     --display=True
 ```
+
 Check `python deep_sort_app.py -h` for an overview of available options.
 There are also scripts in the repository to visualize results, generate videos,
 and evaluate the MOT challenge benchmark.
@@ -64,18 +70,22 @@ appearance of pedestrian bounding boxes using cosine similarity.
 The following example generates these features from standard MOT challenge
 detections. Again, we assume resources have been extracted to the repository
 root directory and MOT16 data is in `./MOT16`:
-```
+
+``` cmd
 python tools/generate_detections.py
     --model=resources/networks/mars-small128.pb \
     --mot_dir=./MOT16/train \
     --output_dir=./resources/detections/MOT16_train
 ```
+
 The model has been generated with TensorFlow 1.5. If you run into
 incompatibility, re-export the frozen inference graph to obtain a new
 `mars-small128.pb` that is compatible with your version:
-```
+
+``` cmd
 python tools/freeze_model.py
 ```
+
 The ``generate_detections.py`` stores for each sequence of the MOT16 dataset
 a separate binary file in NumPy native format. Each file contains an array of
 shape `Nx138`, where N is the number of detections in the corresponding MOT

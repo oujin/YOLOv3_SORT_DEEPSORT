@@ -86,18 +86,17 @@ class Visualization(object):
     This class shows tracking output in an OpenCV image viewer.
     """
 
-    def __init__(self, seq_info, update_ms):
+    def __init__(self, seq_info, viewer):
         image_shape = seq_info["image_size"][::-1]
         aspect_ratio = float(image_shape[1]) / image_shape[0]
         image_shape = 1024, int(aspect_ratio * 1024)
-        self.viewer = ImageViewer(update_ms, image_shape,
-                                  "Figure %s" % seq_info["sequence_name"])
+        self.viewer = viewer
         self.viewer.thickness = 2
         self.frame_idx = seq_info["min_frame_idx"]
         self.last_idx = seq_info["max_frame_idx"]
 
-    def run(self, frame_callback):
-        self.viewer.run(lambda: self._update_fun(frame_callback))
+    def run(self, frame_callback, vedio_file=None):
+        self.viewer.run(lambda: self._update_fun(frame_callback), vedio_file)
 
     def _update_fun(self, frame_callback):
         if self.frame_idx > self.last_idx:

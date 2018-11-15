@@ -13,9 +13,6 @@ from darknet import Darknet
 import pickle as pkl
 import pandas as pd
 import random
-
-import sys
-sys.path.append(os.getcwd())
 from sort.sort import *
 
 
@@ -71,7 +68,7 @@ def arg_parse():
 
 
 args = arg_parse()
-cwd = os.getcwd().replace('\\', '/') + '/yolo_v3/'
+cwd = os.getcwd().replace('\\', '/') + '/'
 images = cwd + args.images
 batch_size = int(args.bs)
 confidence = float(args.confidence)
@@ -122,6 +119,7 @@ loaded_ims = [cv2.imread(x) for x in imlist]
 im_batches = list(
     map(prep_image, loaded_ims, [inp_dim for x in range(len(imlist))]))
 im_dim_list = [(x.shape[1], x.shape[0]) for x in loaded_ims]
+vedio_size = im_dim_list[0]
 im_dim_list = torch.FloatTensor(im_dim_list).repeat(1, 2)
 
 leftover = 0
@@ -276,9 +274,9 @@ list(map(cv2.imwrite, det_names, loaded_ims))
 # )
 
 # list(map(cv2.imwrite, det_names, loaded_ims))
-fps = 25
+fps = 10
 fourcc = cv2.VideoWriter_fourcc(*'MJPG')
-videoWriter = cv2.VideoWriter('yolo_v3/saveVideo.mp4', fourcc, fps, (1224, 370))
+videoWriter = cv2.VideoWriter('saveVideo.avi', fourcc, fps, vedio_size)
 for i, im in enumerate(loaded_ims):
     videoWriter.write(im)
 videoWriter.release()

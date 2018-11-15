@@ -67,7 +67,6 @@ class Tracker:
         # Run matching cascade.
         matches, unmatched_tracks, unmatched_detections = \
             self._match(detections)
-
         # Update track set.
         for track_idx, detection_idx in matches:
             self.tracks[track_idx].update(self.kf, detections[detection_idx])
@@ -113,7 +112,6 @@ class Tracker:
             linear_assignment.matching_cascade(
                 gated_metric, self.metric.matching_threshold, self.max_age,
                 self.tracks, detections, confirmed_tracks)
-
         # Associate remaining tracks together with unconfirmed tracks using IOU.
         iou_track_candidates = unconfirmed_tracks + [
             k for k in unmatched_tracks_a

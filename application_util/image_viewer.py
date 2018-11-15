@@ -282,7 +282,7 @@ class ImageViewer(object):
         """
         self._video_writer = None
 
-    def run(self, update_fun=None):
+    def run(self, update_fun=None, vedio_file=None):
         """Start the image viewer.
 
         This method blocks until the user requests to close the window.
@@ -297,6 +297,8 @@ class ImageViewer(object):
         if update_fun is not None:
             self._user_fun = update_fun
 
+        if vedio_file is not None and self._video_writer is None:
+            self.enable_videowriter(vedio_file)
         self._terminate, is_paused = False, False
         # print("ImageViewer is paused, press space to start.")
         while not self._terminate:
@@ -306,31 +308,31 @@ class ImageViewer(object):
                 if self._video_writer is not None:
                     self._video_writer.write(
                         cv2.resize(self.image, self._window_shape))
-            t1 = time.time()
-            remaining_time = max(1, int(self._update_ms - 1e3 * (t1 - t0)))
-            cv2.imshow(self._caption,
-                       cv2.resize(self.image, self._window_shape[:2]))
-            key = cv2.waitKey(remaining_time)
-            if key & 255 == 27:  # ESC
-                print("terminating")
-                self._terminate = True
-            elif key & 255 == 32:  # ' '
-                print("toggeling pause: " + str(not is_paused))
-                is_paused = not is_paused
-            elif key & 255 == 115:  # 's'
-                print("stepping")
-                self._terminate = not self._user_fun()
-                is_paused = True
+        #     t1 = time.time()
+        #     remaining_time = max(1, int(self._update_ms - 1e3 * (t1 - t0)))
+        #     cv2.imshow(self._caption,
+        #                cv2.resize(self.image, self._window_shape[:2]))
+        #     key = cv2.waitKey(remaining_time)
+        #     if key & 255 == 27:  # ESC
+        #         print("terminating")
+        #         self._terminate = True
+        #     elif key & 255 == 32:  # ' '
+        #         print("toggeling pause: " + str(not is_paused))
+        #         is_paused = not is_paused
+        #     elif key & 255 == 115:  # 's'
+        #         print("stepping")
+        #         self._terminate = not self._user_fun()
+        #         is_paused = True
 
-        # Due to a bug in OpenCV we must call imshow after destroying the
-        # window. This will make the window appear again as soon as waitKey
-        # is called.
-        #
-        # see https://github.com/Itseez/opencv/issues/4535
-        self.image[:] = 0
-        cv2.destroyWindow(self._caption)
-        cv2.waitKey(1)
-        cv2.imshow(self._caption, self.image)
+        # # Due to a bug in OpenCV we must call imshow after destroying the
+        # # window. This will make the window appear again as soon as waitKey
+        # # is called.
+        # #
+        # # see https://github.com/Itseez/opencv/issues/4535
+        # self.image[:] = 0
+        # cv2.destroyWindow(self._caption)
+        # cv2.waitKey(1)
+        # cv2.imshow(self._caption, self.image)
 
     def stop(self):
         """Stop the control loop.
