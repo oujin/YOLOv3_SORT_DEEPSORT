@@ -37,12 +37,6 @@ def arg_parse():
         help="Image / Directory containing images to perform detection upon",
         default="mot_benchmark/test/KITTI-16/img1",
         type=str)
-    parser.add_argument(
-        "--det",
-        dest='det',
-        help="Image / Directory to store detections to",
-        default="det",
-        type=str)
     parser.add_argument("--bs", dest="bs", help="Batch size", default=1)
     parser.add_argument(
         "--confidence",
@@ -231,10 +225,7 @@ except NotADirectoryError:
 except FileNotFoundError:
     print("No file or directory with the name {}".format(args.images))
     exit()
-
-if not os.path.exists(args.det):
-    os.makedirs(args.det)
-
+imlist.sort()
 load_batch = time.time()
 loaded_ims = [cv2.imread(x) for x in imlist]
 

@@ -22,6 +22,8 @@ from tools.generate_detections import create_box_encoder, generate_detections
 from tools.generate_detections import ImageEncoder
 from application_util.image_viewer import ImageViewer
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
 
 def arg_parse():
     """
@@ -105,8 +107,7 @@ def create_detections(detection_mat, frame_idx, min_height=0):
     return detection_list
 
 
-def run(img, det, viewer, min_confidence, nms_max_overlap, tracker,
-        display):
+def run(img, det, viewer, min_confidence, nms_max_overlap, tracker, display):
     def frame_callback(vis, frame_idx):
         print("Processing frame {:05d}".format(int(frame_idx) + 1))
 
@@ -176,7 +177,7 @@ except NotADirectoryError:
 except FileNotFoundError:
     print("No file or directory with the name {}".format(args.images))
     exit()
-
+imlist.sort()
 load_batch = time.time()
 
 init = 0
@@ -188,8 +189,7 @@ for i, img_path in enumerate(imlist):
     im_prep = prep_image(img, inp_dim)
     im_dim = [img.shape[:2][::-1]]
     if not init:
-        viewer = ImageViewer(40, img.shape[:2][::-1],
-                             "Figure KITTI-16")
+        viewer = ImageViewer(40, img.shape[:2][::-1], "Figure KITTI-16")
         init = 1
     im_dim = torch.FloatTensor(im_dim)
     if CUDA:
